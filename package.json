@@ -1,0 +1,7 @@
+{
+  "name": "container_name_title_addon",
+  "version": "1.0.0",
+  "webExt": {
+    "sourceDir": "src/"
+  }
+}
