@@ -1,13 +1,8 @@
-// Put all the javascript code here, that you want to execute in background.
 function changeTitle(currentTab, containerName) {
-    
-    // browser.windows.update(currentTab.windowId, {titlePreface: '' });
     const currentTitle = currentTab.title;
     if (currentTitle.indexOf(containerName) >= 0) {
         return;
     }
-    // const script = `document.title = document.title + ' [${containerName}]'`;
-    // browser.tabs.executeScript(currentTab.id, {code: script})
     browser.scripting
     .executeScript({
         target: {
@@ -22,11 +17,10 @@ function changeTitle(currentTab, containerName) {
         if (result.error) {
             console.error(result.error);
         } else {
-            console.log('title was modified');
+            // console.log('title was modified');
         }
     })
     .catch((err) => {
-        // browser.windows.update(currentTab.windowId, {titlePreface: '[' + containerName + '] ' });
         console.error(err);
     });
 }
@@ -36,7 +30,6 @@ function getContainerName(cookieStoreId) {
         // containers are not activated
         return;
     }
-    console.log('cookieStoreId', cookieStoreId);
     return browser.contextualIdentities
     .get(cookieStoreId)
     .then((contextIdentity) => {
@@ -70,7 +63,7 @@ function onWindow(windowId) {
     .then((tabs) => {
         const currentTab = tabs[0];
         if (windowId != currentTab.windowId) {
-            console.log('tab from another window ' + currentTab.title);
+            // tab from another window
             return;
         }
         onTab(currentTab);
@@ -78,21 +71,11 @@ function onWindow(windowId) {
 }
 
 function tabActivated(activeInfo) {
-    console.log('tab activated');
 	onWindow(activeInfo.windowId);
 }
 
 function tabUpdated(tabId, changeInfo, currentTab) {
-    console.log('tab updated', changeInfo);
     onTab(currentTab);
-}
-
-function windowFocused(windowId) {
-    if (windowId < 0) {
-        return;
-    }
-    console.log('window focused');
-    onWindow(windowId);
 }
 
 if (!browser.contextualIdentities) {
@@ -102,7 +85,6 @@ if (!browser.contextualIdentities) {
     browser.tabs.onUpdated.addListener(tabUpdated, {
         properties: ['status', 'title']
     });
-    // browser.windows.onFocusChanged.addListener(windowFocused);
 }
 
 
